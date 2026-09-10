@@ -3,18 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phoenix Miuka</title>
+    <title>phoenixMiuka Workers</title>
     <style>
       :root {
-        --bg: #0b1020;
-        --panel: #121a2b;
-        --panel-alt: #1b2642;
-        --text: #edf3ff;
-        --muted: #a9bbd6;
-        --accent: #7dd3fc;
-        --accent-2: #c4b5fd;
-        --success: #86efac;
-        --danger: #fca5a5;
+        --bg-1: #0f172a;
+        --bg-2: #111827;
+        --panel: rgba(15, 23, 42, 0.72);
+        --panel-border: rgba(148, 163, 184, 0.2);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #38bdf8;
+        --accent-2: #8b5cf6;
+        --success: #34d399;
+        --shadow: 0 20px 40px rgba(15, 23, 42, 0.35);
       }
 
       * { box-sizing: border-box; }
@@ -22,256 +23,340 @@
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: "Segoe UI", YuGothic, Meiryo, sans-serif;
-        background: linear-gradient(135deg, #0b1020, #1a2340 45%, #0f172a);
+        font-family: "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), transparent 30%),
+          radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.25), transparent 30%),
+          linear-gradient(135deg, var(--bg-1), var(--bg-2));
         color: var(--text);
       }
 
       .container {
-        max-width: 980px;
+        max-width: 1080px;
         margin: 0 auto;
-        padding: 48px 24px 80px;
+        padding: 48px 20px 80px;
       }
 
       .hero {
-        background: rgba(18, 26, 43, 0.9);
-        border: 1px solid rgba(125, 211, 252, 0.2);
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 24px;
+        align-items: center;
+        margin-bottom: 32px;
+      }
+
+      .title-box,
+      .panel,
+      .api-card {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .title-box {
         border-radius: 24px;
         padding: 32px;
-        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(56, 189, 248, 0.14);
+        color: #bae6fd;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       h1 {
-        margin: 0 0 12px;
-        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-size: clamp(2.3rem, 5vw, 4rem);
+        margin: 18px 0 10px;
+        line-height: 1.1;
       }
 
       .subtitle {
-        margin: 0 0 24px;
         color: var(--muted);
+        font-size: 1.04rem;
         line-height: 1.7;
-      }
-
-      .controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
         margin-bottom: 24px;
       }
 
-      .input-row {
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .tag {
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        background: rgba(148, 163, 184, 0.12);
+        color: #dbeafe;
+        border: 1px solid rgba(148, 163, 184, 0.15);
+      }
+
+      .status-panel {
+        border-radius: 24px;
+        padding: 24px;
+      }
+
+      .status-rail {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #d1fae5;
+        margin-bottom: 10px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 20px rgba(52, 211, 153, 0.85);
+      }
+
+      .url-box {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: rgba(15, 118, 110, 0.14);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        color: #d1fae5;
+        font-size: 0.95rem;
+      }
+
+      .controls {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        margin-bottom: 28px;
+      }
+
+      .input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(15, 23, 42, 0.3);
+        border: 1px solid var(--panel-border);
+      }
+
+      .input-wrap label {
+        color: var(--muted);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      .input-wrap input {
+        flex: 1;
+        background: transparent;
+        border: 0;
+        color: var(--text);
+        font-size: 1rem;
+        outline: none;
+      }
+
+      .buttons {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        align-items: center;
-        width: 100%;
-      }
-
-      input, button {
-        font: inherit;
-      }
-
-      input {
-        flex: 1 1 240px;
-        min-width: 0;
-        border: 1px solid rgba(125, 211, 252, 0.3);
-        background: rgba(15, 23, 42, 0.7);
-        color: var(--text);
-        border-radius: 12px;
-        padding: 14px 16px;
       }
 
       button {
-        border: none;
+        border: 0;
         border-radius: 12px;
-        padding: 14px 18px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-2));
-        color: #0f172a;
+        padding: 12px 18px;
         font-weight: 700;
         cursor: pointer;
+        color: #f8fafc;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        box-shadow: 0 14px 28px rgba(56, 189, 248, 0.2);
+        transition: transform 0.15s ease, filter 0.15s ease;
       }
 
-      .status {
-        margin-top: 14px;
-        padding: 12px 14px;
-        border-radius: 12px;
-        background: rgba(15, 23, 42, 0.9);
-        color: var(--muted);
-        min-height: 48px;
+      button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.04);
+      }
+
+      button.secondary {
+        background: rgba(148, 163, 184, 0.12);
+        color: var(--text);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        box-shadow: none;
       }
 
       .grid {
-        margin-top: 32px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
       }
 
-      .card {
-        background: rgba(27, 38, 66, 0.9);
-        border: 1px solid rgba(196, 181, 253, 0.2);
+      .api-card {
         border-radius: 20px;
-        padding: 20px;
+        padding: 18px 18px 20px;
       }
 
-      .card h2 {
+      .api-card h3 {
         margin: 0 0 12px;
-        font-size: 1.2rem;
+        font-size: 1.05rem;
+      }
+
+      .api-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .response-panel {
+        margin-top: 28px;
+        border-radius: 20px;
+        padding: 18px;
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid var(--panel-border);
+      }
+
+      .response-panel h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.1rem;
       }
 
       pre {
         margin: 0;
-        white-space: pre-wrap;
-        word-break: break-word;
-        font-family: "Consolas", "SFMono-Regular", monospace;
-        color: var(--success);
+        padding: 16px;
+        overflow-x: auto;
+        border-radius: 12px;
+        background: rgba(2, 6, 23, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        color: #dbeafe;
+        line-height: 1.6;
       }
 
-      .error {
-        color: var(--danger);
+      @media (max-width: 840px) {
+        .hero,
+        .grid,
+        .controls {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          display: block;
+        }
+
+        .buttons {
+          margin-top: 14px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <section class="hero">
-        <h1>Phoenix Miuka</h1>
-        <p class="subtitle">
-          Cloudflare Workers と Pages をつなぐサンプルです。<br />
-          画面から API を呼び出して、JSON と メッセージを確認できます。
-        </p>
-
-        <div class="controls">
-          <div class="input-row">
-            <input id="workerBaseUrl" type="text" value="https://backend.fujimi-mk-ii.workers.dev/" placeholder="https://<worker-name>.<subdomain>.workers.dev" />
-            <button id="loadCourseBtn">/api/course を取得</button>
-          </div>
-          <div class="input-row">
-            <input id="helloName" type="text" value="山田" placeholder="名前を入力" />
-            <button id="helloBtn">/api/hello を呼ぶ</button>
+        <div class="title-box">
+          <div class="eyebrow">Cloudflare × Pages</div>
+          <h1>phoenixMiuka Workers</h1>
+          <p class="subtitle">
+            Cloudflare Workers と Pages をつないで、API を呼び出して可視化するサンプルです。
+            Worker の公開 URL を設定して、すぐに動作確認できます。
+          </p>
+          <div class="tags">
+            <span class="tag">Workers</span>
+            <span class="tag">Pages</span>
+            <span class="tag">API</span>
+            <span class="tag">CORS</span>
           </div>
         </div>
 
-        <div id="status" class="status">準備中...</div>
+        <div class="panel status-panel">
+          <div class="status-rail">
+            <span class="dot"></span>
+            <strong>サービス稼働中</strong>
+          </div>
+          <p class="subtitle" style="margin-bottom: 0;">
+            Worker ベース URL をここに入力して、ローカル/本番の API を切り替えられます。
+          </p>
+          <div class="url-box" id="serviceUrl">http://127.0.0.1:8787</div>
+        </div>
+      </section>
+
+      <section class="controls">
+        <div class="input-wrap">
+          <label for="workerBaseUrl">Worker URL</label>
+          <input id="workerBaseUrl" type="text" value="http://127.0.0.1:8787" />
+        </div>
+        <div class="buttons">
+          <button id="fetchCourses">/api/course</button>
+          <button id="fetchHello" class="secondary">/api/hello</button>
+          <button id="fetchFortune" class="secondary">/api/fortune</button>
+        </div>
       </section>
 
       <section class="grid">
-        <article class="card">
-          <h2>Course API</h2>
-          <pre id="courseResult">まだ取得していません</pre>
+        <article class="api-card">
+          <h3>Course API</h3>
+          <p>講座一覧を返します。配列形式で教材情報を確認できます。</p>
         </article>
+        <article class="api-card">
+          <h3>Hello API</h3>
+          <p>名前付きで挨拶を返す API。入力が空では 400 になります。</p>
+        </article>
+        <article class="api-card">
+          <h3>Fortune API</h3>
+          <p>ランダムに今日のメッセージを返して、UI にワクワク感を出せます。</p>
+        </article>
+      </section>
 
-        <article class="card">
-          <h2>Hello API</h2>
-          <pre id="helloResult">まだ取得していません</pre>
-        </article>
-
-        <article class="card">
-          <h2>Fortune API</h2>
-          <pre id="fortuneResult">まだ取得していません</pre>
-        </article>
+      <section class="response-panel">
+        <h2>API Response</h2>
+        <pre id="responseOutput">{}</pre>
       </section>
     </div>
 
     <script>
       const workerBaseUrlInput = document.getElementById('workerBaseUrl');
-      const helloNameInput = document.getElementById('helloName');
-      const statusBox = document.getElementById('status');
-      const courseResult = document.getElementById('courseResult');
-      const helloResult = document.getElementById('helloResult');
-      const fortuneResult = document.getElementById('fortuneResult');
+      const responseOutput = document.getElementById('responseOutput');
+      const serviceUrl = document.getElementById('serviceUrl');
 
-      const setStatus = (message, isError = false) => {
-        statusBox.textContent = message;
-        statusBox.classList.toggle('error', isError);
-      };
+      function updateServiceUrl() {
+        const value = workerBaseUrlInput.value.trim() || 'http://127.0.0.1:8787';
+        serviceUrl.textContent = value;
+      }
 
-      const fetchJson = async (url) => {
-        const response = await fetch(url, { method: 'GET' });
-        const text = await response.text();
+      async function callApi(path) {
+        const base = workerBaseUrlInput.value.trim() || 'http://127.0.0.1:8787';
+        const url = `${base.replace(/\/$/, '')}${path}`;
 
         try {
-          return {
-            ok: response.ok,
+          const response = await fetch(url);
+          const data = await response.json();
+          responseOutput.textContent = JSON.stringify({
             status: response.status,
-            data: JSON.parse(text),
-          };
+            url,
+            body: data
+          }, null, 2);
         } catch (error) {
-          return {
-            ok: false,
-            status: response.status,
-            data: text,
-          };
+          responseOutput.textContent = JSON.stringify({
+            error: String(error)
+          }, null, 2);
         }
-      };
+      }
 
-      const loadCourse = async () => {
-        const baseUrl = workerBaseUrlInput.value.trim();
-        if (!baseUrl) {
-          setStatus('Worker URL を入力してください。', true);
-          return;
-        }
+      workerBaseUrlInput.addEventListener('input', updateServiceUrl);
+      document.getElementById('fetchCourses').addEventListener('click', () => callApi('/api/course'));
+      document.getElementById('fetchHello').addEventListener('click', () => callApi('/api/hello?name=Miuka'));
+      document.getElementById('fetchFortune').addEventListener('click', () => callApi('/api/fortune'));
 
-        const url = `${baseUrl.replace(/\/$/, '')}/api/course`;
-        setStatus(`取得中... ${url}`);
-
-        const result = await fetchJson(url);
-        if (!result.ok) {
-          setStatus(`取得失敗: ${result.status}`, true);
-          courseResult.textContent = JSON.stringify(result.data, null, 2);
-          return;
-        }
-
-        courseResult.textContent = JSON.stringify(result.data, null, 2);
-        setStatus(`取得成功: ${result.status}`);
-      };
-
-      const callHello = async () => {
-        const baseUrl = workerBaseUrlInput.value.trim();
-        const name = helloNameInput.value.trim();
-        if (!baseUrl) {
-          setStatus('Worker URL を入力してください。', true);
-          return;
-        }
-
-        const url = `${baseUrl.replace(/\/$/, '')}/api/hello?name=${encodeURIComponent(name)}`;
-        setStatus(`呼び出し中... ${url}`);
-
-        const result = await fetchJson(url);
-        if (!result.ok) {
-          setStatus(`エラー: ${result.status}`, true);
-          helloResult.textContent = JSON.stringify(result.data, null, 2);
-          return;
-        }
-
-        helloResult.textContent = JSON.stringify(result.data, null, 2);
-        setStatus(`成功: ${result.status}`);
-      };
-
-      const loadFortune = async () => {
-        const baseUrl = workerBaseUrlInput.value.trim();
-        if (!baseUrl) {
-          setStatus('Worker URL を入力してください。', true);
-          return;
-        }
-
-        const url = `${baseUrl.replace(/\/$/, '')}/api/fortune`;
-        const result = await fetchJson(url);
-        if (!result.ok) {
-          fortuneResult.textContent = JSON.stringify(result.data, null, 2);
-          return;
-        }
-
-        fortuneResult.textContent = JSON.stringify(result.data, null, 2);
-      };
-
-      document.getElementById('loadCourseBtn').addEventListener('click', loadCourse);
-      document.getElementById('helloBtn').addEventListener('click', callHello);
-
-      window.addEventListener('DOMContentLoaded', async () => {
-        await loadCourse();
-        await loadFortune();
-      });
+      updateServiceUrl();
     </script>
   </body>
 </html>

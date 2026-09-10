@@ -1,6 +1,7 @@
-name = "phoenix-miuka-worker"
+name = "phoenix-miuka-workers"
 main = "src/index.js"
-compatibility_date = "2025-09-01"
+compatibility_date = "2025-07-18"
 
 [vars]
-APP_NAME = "phoenixMiuka"
+APP_NAME = "phoenixMiuka Workers"
+APP_TAGLINE = "Cloudflare Workers × Pages Demo"
