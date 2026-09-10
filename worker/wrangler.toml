@@ -1,0 +1,6 @@
+name = "phoenix-miuka-worker"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+APP_NAME = "phoenixMiuka"

@@ -1,13 +1,277 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>フロントエンドです</title>
-</head>
-<body>
-    <p>フロントエンドです</p>
-    <p>やっほーーー</p>
-    <p>みうかだよーーーーーん💩💩</p>
-</body>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phoenix Miuka</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121a2b;
+        --panel-alt: #1b2642;
+        --text: #edf3ff;
+        --muted: #a9bbd6;
+        --accent: #7dd3fc;
+        --accent-2: #c4b5fd;
+        --success: #86efac;
+        --danger: #fca5a5;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", YuGothic, Meiryo, sans-serif;
+        background: linear-gradient(135deg, #0b1020, #1a2340 45%, #0f172a);
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+      }
+
+      .hero {
+        background: rgba(18, 26, 43, 0.9);
+        border: 1px solid rgba(125, 211, 252, 0.2);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+      }
+
+      .subtitle {
+        margin: 0 0 24px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .input-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+      }
+
+      input, button {
+        font: inherit;
+      }
+
+      input {
+        flex: 1 1 240px;
+        min-width: 0;
+        border: 1px solid rgba(125, 211, 252, 0.3);
+        background: rgba(15, 23, 42, 0.7);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #0f172a;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .status {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.9);
+        color: var(--muted);
+        min-height: 48px;
+      }
+
+      .grid {
+        margin-top: 32px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: rgba(27, 38, 66, 0.9);
+        border: 1px solid rgba(196, 181, 253, 0.2);
+        border-radius: 20px;
+        padding: 20px;
+      }
+
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 1.2rem;
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: "Consolas", "SFMono-Regular", monospace;
+        color: var(--success);
+      }
+
+      .error {
+        color: var(--danger);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="hero">
+        <h1>Phoenix Miuka</h1>
+        <p class="subtitle">
+          Cloudflare Workers と Pages をつなぐサンプルです。<br />
+          画面から API を呼び出して、JSON と メッセージを確認できます。
+        </p>
+
+        <div class="controls">
+          <div class="input-row">
+            <input id="workerBaseUrl" type="text" value="http://127.0.0.1:8787" placeholder="https://<worker-name>.<subdomain>.workers.dev" />
+            <button id="loadCourseBtn">/api/course を取得</button>
+          </div>
+          <div class="input-row">
+            <input id="helloName" type="text" value="山田" placeholder="名前を入力" />
+            <button id="helloBtn">/api/hello を呼ぶ</button>
+          </div>
+        </div>
+
+        <div id="status" class="status">準備中...</div>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Course API</h2>
+          <pre id="courseResult">まだ取得していません</pre>
+        </article>
+
+        <article class="card">
+          <h2>Hello API</h2>
+          <pre id="helloResult">まだ取得していません</pre>
+        </article>
+
+        <article class="card">
+          <h2>Fortune API</h2>
+          <pre id="fortuneResult">まだ取得していません</pre>
+        </article>
+      </section>
+    </div>
+
+    <script>
+      const workerBaseUrlInput = document.getElementById('workerBaseUrl');
+      const helloNameInput = document.getElementById('helloName');
+      const statusBox = document.getElementById('status');
+      const courseResult = document.getElementById('courseResult');
+      const helloResult = document.getElementById('helloResult');
+      const fortuneResult = document.getElementById('fortuneResult');
+
+      const setStatus = (message, isError = false) => {
+        statusBox.textContent = message;
+        statusBox.classList.toggle('error', isError);
+      };
+
+      const fetchJson = async (url) => {
+        const response = await fetch(url, { method: 'GET' });
+        const text = await response.text();
+
+        try {
+          return {
+            ok: response.ok,
+            status: response.status,
+            data: JSON.parse(text),
+          };
+        } catch (error) {
+          return {
+            ok: false,
+            status: response.status,
+            data: text,
+          };
+        }
+      };
+
+      const loadCourse = async () => {
+        const baseUrl = workerBaseUrlInput.value.trim();
+        if (!baseUrl) {
+          setStatus('Worker URL を入力してください。', true);
+          return;
+        }
+
+        const url = `${baseUrl.replace(/\/$/, '')}/api/course`;
+        setStatus(`取得中... ${url}`);
+
+        const result = await fetchJson(url);
+        if (!result.ok) {
+          setStatus(`取得失敗: ${result.status}`, true);
+          courseResult.textContent = JSON.stringify(result.data, null, 2);
+          return;
+        }
+
+        courseResult.textContent = JSON.stringify(result.data, null, 2);
+        setStatus(`取得成功: ${result.status}`);
+      };
+
+      const callHello = async () => {
+        const baseUrl = workerBaseUrlInput.value.trim();
+        const name = helloNameInput.value.trim();
+        if (!baseUrl) {
+          setStatus('Worker URL を入力してください。', true);
+          return;
+        }
+
+        const url = `${baseUrl.replace(/\/$/, '')}/api/hello?name=${encodeURIComponent(name)}`;
+        setStatus(`呼び出し中... ${url}`);
+
+        const result = await fetchJson(url);
+        if (!result.ok) {
+          setStatus(`エラー: ${result.status}`, true);
+          helloResult.textContent = JSON.stringify(result.data, null, 2);
+          return;
+        }
+
+        helloResult.textContent = JSON.stringify(result.data, null, 2);
+        setStatus(`成功: ${result.status}`);
+      };
+
+      const loadFortune = async () => {
+        const baseUrl = workerBaseUrlInput.value.trim();
+        if (!baseUrl) {
+          setStatus('Worker URL を入力してください。', true);
+          return;
+        }
+
+        const url = `${baseUrl.replace(/\/$/, '')}/api/fortune`;
+        const result = await fetchJson(url);
+        if (!result.ok) {
+          fortuneResult.textContent = JSON.stringify(result.data, null, 2);
+          return;
+        }
+
+        fortuneResult.textContent = JSON.stringify(result.data, null, 2);
+      };
+
+      document.getElementById('loadCourseBtn').addEventListener('click', loadCourse);
+      document.getElementById('helloBtn').addEventListener('click', callHello);
+
+      window.addEventListener('DOMContentLoaded', async () => {
+        await loadCourse();
+        await loadFortune();
+      });
+    </script>
+  </body>
 </html>
